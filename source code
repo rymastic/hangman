@@ -1,0 +1,240 @@
+
+import random
+from os import system
+
+
+# draw hangman
+#   _______
+#  |      |
+#  |      0
+#  |     /|\
+#  |      |
+#  |     / \
+#  |
+
+
+vowels = ["a", "e", "i", "o", "u"]
+consonants = ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z"]
+
+
+def topic():
+    print("1. Nature")
+    print("2. Animals")
+    print("3. Food")
+    print("4. Countries")
+    print("5. Exit")
+    choice = input("Please choose a topic: ")
+    return choice
+
+
+def menu(flag):
+    if (flag == 1):
+        print("Welcome to Hangman!")
+        print("1. Play Game")
+        print("2. Exit")
+    else:
+        print("1. New Game")
+        print("2. Exit")
+    choice = input("Please choose an option: ")
+    return choice
+
+
+
+def get_word(topic_choice):
+    if (topic_choice == "1"):
+        file = open("Words of Nature", "r")
+        words = file.readlines()
+        file.close()
+        return random.choice(words).strip()
+    elif (topic_choice == "2"):
+        file = open("Words of Animals", "r")
+        words = file.readlines()
+        file.close()
+        return random.choice(words).strip()
+    elif (topic_choice == "3"):
+        file = open("Words of Food", "r")
+        words = file.readlines()
+        file.close()
+        return random.choice(words).strip()
+    elif (topic_choice == "4"):
+        file = open("Words of Countries", "r")
+        words = file.readlines()
+        file.close()
+        return random.choice(words).strip()
+    else:
+        print("Invalid input")
+        return None
+
+def hangman(wrong_guesses_left):
+    if (wrong_guesses_left == 10):
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+    if (wrong_guesses_left == 9):
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("         ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 8):
+        print("         ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 7):
+        print("  ____   ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 6):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |       ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 5):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |     \ ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 4):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |   / \ ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 3):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |   /|\ ")
+        print(" |       ")
+        print(" |       ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 2):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |   /|\ ")
+        print(" |       ")
+        print(" |   /   ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 1):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |   /|\ ")
+        print(" |       ")
+        print(" |   / \ ")
+        print("/ \      ")
+    elif (wrong_guesses_left == 0):
+        print("  ____   ")
+        print(" |       ")
+        print(" |    0  ")
+        print(" |   /|\ ")
+        print(" |    |  ")
+        print(" |   / \ ")
+        print("/ \      ")
+    elif (wrong_guesses_left == -1):
+        print("  ____   ")
+        print(" |    |  ")
+        print(" |    0  ")
+        print(" |   /|\ ")
+        print(" |    |  ")
+        print(" |   / \ ")
+        print("/ \      ")
+
+
+
+def game_play(word):
+    _word = list(word)
+    len_word = len(_word)
+    wrong_guesses_left = 10
+    guessed_letters = []
+    cur_word = ["_"] * len_word
+    while (True):
+        system("cls")
+        print(*vowels)
+        print(*consonants)
+        hangman(wrong_guesses_left)
+        print("You have", wrong_guesses_left, "wrong guesses left")
+        print("Current word:", *cur_word)
+        guess = input("Guess a letter: ").lower()
+        while not (guess.isalpha()) or len(guess) > 1:
+            guess = input("Please enter a valid letter: ")
+
+        if (guess in guessed_letters):
+            print("You've already guessed that letter!")
+            continue
+        flag_1 = 0
+        for i in range(5):
+            if (guess == vowels[i]):
+                vowels[i] = "_"
+                guessed_letters.append(guess)
+                flag_1 = 1
+                break
+        if (flag_1 == 0):
+            for i in range(21):
+                if (guess == consonants[i]):
+                    consonants[i] = "_"
+                    guessed_letters.append(guess)
+                    break
+        flag_2 = 0
+        for i in range(len_word):
+            if (_word[i] == guess):
+                cur_word[i] = guess
+                print("Correct!")
+                flag_2 = 1
+                break
+        if (flag_2 == 0):
+            print("Incorrect!")
+            wrong_guesses_left -= 1
+        if (cur_word == _word):
+            print("You win!")
+            print("Current word:", *cur_word)
+            print("The word was:", word)
+            break
+        if (wrong_guesses_left == -1):
+            hangman(wrong_guesses_left)
+            print("You lose!")
+            print("The word was:", word)
+            break
+
+
+flag = 1
+while (True):
+    choice = menu(flag)
+    flag = 0
+    vowels = ["a", "e", "i", "o", "u"]
+    consonants = ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z"]
+    if (choice == "1"):
+        topic_choice = topic()
+        word = get_word(topic_choice)
+        if word:
+            game_play(word)
+
+    elif (choice == "2"):
+        break
+    else:
+        print("Invalid input")
+
+        
